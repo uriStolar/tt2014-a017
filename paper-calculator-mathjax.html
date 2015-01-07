@@ -1,0 +1,229 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+
+<polymer-element name="paper-calculator-mathjax" attributes="expression mathresult matherror">
+  <template>
+
+  <style>
+
+  :host {
+    display: block;
+  }
+
+  .mathjax {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-right: 30px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background-color: transparent;
+    color: #b3b3b3;
+    overflow: hidden;
+  }
+
+  .mathjax.show-mathresult {
+    color: #eee;
+  }
+
+  .mathexpression-outer {
+    width: 100%;
+    height: 100%;
+    font-size: 3em;
+    font-weight: 100;
+    text-align: right;
+    overflow: hidden;
+  }
+
+  .show-mathresult > .mathexpression-outer {
+    height: 38%;
+    font-size: 2.5em;
+    font-weight: 400;
+  }
+
+  #mathexpression {
+    white-space: nowrap;
+  }
+
+  .mathjax.matherror #mathexpression {
+    display: none;
+  }
+
+  #matherror {
+    display: none;
+    color: #eee;
+    font-size: 3.5em;
+  }
+
+  .mathjax.matherror #matherror {
+    display: block;
+  }
+
+  .mathresult {
+    visibility: hidden;
+  }
+
+  .show-mathresult > .mathresult {
+    visibility: visible;
+    height: 62%;
+    font-weight: 400;
+  }
+
+  .mathresult-equal {
+    padding: 0 30px;
+    font-size: 2.5em;
+  }
+
+  .mathresult-value {
+    font-size: 5em;
+    overflow: hidden;
+  }
+
+</style>
+<!-- <div class="clearfix" id="latexPanel" horizontal end-justified center layout>
+{{mathexpression}}
+</div> -->
+
+<div class="mathjax {{ {matherror: matherror, 'show-mathresult': mathresult && !matherror } | tokenList }}">
+
+  <div class="mathexpression-outer" horizontal end-justified center layout>
+    <div id="expression">$ \sigma $</div>
+    <!-- <div id="matherror">{{matherror}}</div> -->
+
+    <div id="MathPreview"></div>
+    <div id="MathBuffer" style="border:1px solid; padding: 3px; width:50%; margin-top:5px;
+    visibility:hidden; position:absolute; top:0; left: 0"></div>
+
+<!--
+    <script>
+    Preview.Init();
+    </script>
+ -->
+
+  </div>
+<!--
+  <div class="mathresult" horizontal center layout>
+
+    <div class="mathresult-equal">=</div>
+    <div class="mathresult-value" flex horizontal end-justified layout>{{mathresult}}</div>
+
+  </div> -->
+
+</div>
+
+
+</template>
+
+<!-- MathJax stuff -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  showProcessingMessages: false,
+  tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+});
+</script>
+<script type="text/javascript" src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<script>
+
+  Polymer('paper-calculator-mathjax', {
+
+    //
+    //  Get the preview and buffer DIV's
+    //
+    domReady: function() {
+      this.preview = document.getElementById("MathPreview");
+      this.buffer = document.getElementById("MathBuffer");
+
+      console.log('domReady');
+    },
+
+    Preview : {
+      delay: 150,        // delay after keystroke before updating
+
+      preview: null,     // filled in by Init below
+      buffer: null,      // filled in by Init below
+
+      timeout: null,     // store setTimout id
+      mjRunning: false,  // true when MathJax is processing
+      oldText: null,     // used to check if an update is needed
+
+
+      // Init: function () {
+      //   this.preview = document.getElementById("MathPreview");
+      //   this.buffer = document.getElementById("MathBuffer");
+      // },
+
+      //
+      //  Switch the buffer and preview, and display the right one.
+      //  (We use visibility:hidden rather than display:none since
+      //  the results of running MathJax are more accurate that way.)
+      //
+      SwapBuffers: function () {
+        var buffer = this.preview, preview = this.buffer;
+        this.buffer = buffer; this.preview = preview;
+        buffer.style.visibility = "hidden"; buffer.style.position = "absolute";
+        preview.style.position = ""; preview.style.visibility = "";
+        console.log('SwapBuffers');
+      },
+
+      //
+      //  This gets called when a key is pressed in the textarea.
+      //  We check if there is already a pending update and clear it if so.
+      //  Then set up an update to occur after a small delay (so if more keys
+      //    are pressed, the update won't occur until after there has been
+      //    a pause in the typing).
+      //  The callback function is set up below, after the Preview object is set up.
+      //
+      Update: function () {
+        if (this.timeout) {clearTimeout(this.timeout)}
+          this.timeout = setTimeout(this.CacheCallback(),this.delay);
+        },
+
+        //
+        //  Creates the preview and runs MathJax on it.
+        //  If MathJax is already trying to render the code, return
+        //  If the text hasn't changed, return
+        //  Otherwise, indicate that MathJax is running, and start the
+        //    typesetting.  After it is done, call PreviewDone.
+        //
+        CreatePreview: function () {
+          Preview.timeout = null;
+          if (this.mjRunning) return;
+          var text = document.getElementById("expression").value;
+          console.log(text);
+          if (text === this.oldtext) return;
+          this.buffer.innerHTML = this.oldtext = text;
+          this.mjRunning = true;
+          MathJax.Hub.Queue(
+          ["Typeset",MathJax.Hub,this.buffer],
+          ["PreviewDone",this]
+          );
+        },
+
+        //
+        //  Indicate that MathJax is no longer running,
+        //  and swap the buffers to show the results.
+        //
+        PreviewDone: function () {
+          this.mjRunning = false;
+          this.SwapBuffers();
+          console.log('PreviewDone');
+        },
+
+        //
+        //  Cache a callback to the CreatePreview action
+        //
+        CacheCallback: function () {
+          this.callback = MathJax.Callback(["CreatePreview",Preview]);
+          this.callback.autoReset = true;  // make sure it can run more than once
+        }
+
+      }
+
+
+
+  });
+
+</script>
+
+</polymer-element>
