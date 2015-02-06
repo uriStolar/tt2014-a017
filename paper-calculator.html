@@ -119,7 +119,7 @@
       ],
 
       modeKeys: [
-        ['\\partial', 'Grad', 'Rad', 'Graficar', 'Modelar']
+        ['Solucion']
       ],
 
       errorMsgs: ['error...', 'umm...', ':-('],
@@ -184,6 +184,9 @@
         if (this.modeKeys[0].indexOf(k) < 0) {
           this.processKey(k);
         }
+        if(k=='Solucion'){
+          this.processKey(k);
+        }
       },
 
       keyDown: function(e) {
@@ -198,7 +201,7 @@
         var c = e.keyCode, k;
         // enter key
         if (c === 13) {
-          k = '=';
+          k = 'Solucion';
         } else {
           k = String.fromCharCode(c);
         }
@@ -211,8 +214,9 @@
         if (this.result && k !== '=') {
           this.clear();
         }
-        if (k === '=') {
+        if (k === 'Solucion') {
           this.async(this.eval);
+          //this.expression = "Solcionado...";
         } else if (k === 'DEL') {
           this.del();
         } else {
