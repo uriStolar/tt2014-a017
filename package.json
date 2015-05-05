@@ -1,0 +1,37 @@
+{
+  "name": "tt2014-a017",
+  "version": "1.0.0",
+  "description": "Trabajo Terminal Ecuaciones Diferenciales",
+  "main": "server.js",
+  "dependencies": {
+    "connect": "^3.3.3",
+    "serve-static": "^1.7.1"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "load-grunt-tasks": "~0.2.0",
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.2",
+    "grunt-serve": "^0.1.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uriStolar/tt2014-a017.git"
+  },
+  "keywords": [
+    "differential",
+    "equations",
+    "prolog",
+    "polymer"
+  ],
+  "author": "Uri Stolar, Jonathan Aca",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uriStolar/tt2014-a017/issues"
+  },
+  "homepage": "https://github.com/uriStolar/tt2014-a017"
+}
