@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Visualización dinámica de código LaTeX en una Text Area</title>
+<!-- Copyright (c) 2012-2015 The MathJax Consortium -->
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false,
+    tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+  });
+</script>
+<script type="text/javascript" src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<script>
+var Preview = {
+  delay: 150,        // retraso de actualizacion despues de presionar una tecla
+
+  preview: null,     // se llena el Init()
+  buffer: null,      // se llena el Init()
+
+  timeout: null,     // guarda id de timeout
+  mjRunning: false,  // true cuando MathJax esta procesando
+  oldText: null,     // checa si se necesita actualizar
+
+  //
+  //  Obtiene el preview y buffer de los divs de la pagina
+  //
+  Init: function () {
+    this.preview = document.getElementById("MathPreview");
+    this.buffer = document.getElementById("MathBuffer");
+  },
+
+  //
+  //  Cambia el buffer y preview, y muestra el correcto.
+  //
+  SwapBuffers: function () {
+    var buffer = this.preview, preview = this.buffer;
+    this.buffer = buffer; this.preview = preview;
+    buffer.style.visibility = "hidden"; buffer.style.position = "absolute";
+    preview.style.position = ""; preview.style.visibility = "";
+  },
+
+  //
+  //  Funcion para actualizar textarea
+  //  Checamos si hay alguna actualizacion pendiente y en dado caso se elimina.
+  //  Despues activamos la actualizacion despues de un pequeño retraso
+  //  La actualizacion se ejecuta hasta que se dejen de presionar teclas
+  //  La funcion de retrollamada se establece despues del objeto Preview
+  //
+  Update: function () {
+    if (this.timeout) {clearTimeout(this.timeout)}
+    this.timeout = setTimeout(this.callback,this.delay);
+  },
+
+  //
+  //  Crea el Preview y ejecuta MathJax
+  //  Si MathJax ya esta rendereando el codigo, return.
+  //  Si el texto no ha cambiado, return
+  //  De otra forma, indica que MathJax esta corriendo e inicia el Typeset
+  //  Despues llama a PreviewDone.
+  //
+  CreatePreview: function () {
+    Preview.timeout = null;
+    if (this.mjRunning) return;
+    var text = document.getElementById("MathInput").value;
+    if (text === this.oldtext) return;
+    this.buffer.innerHTML = this.oldtext = text;
+    this.mjRunning = true;
+    MathJax.Hub.Queue(
+      ["Typeset",MathJax.Hub,this.buffer],
+      ["PreviewDone",this]
+    );
+  },
+
+  //
+  //  Indica que MathJax ya no esta corriendo
+  //  y cambia los buffers para mostrar el resultado.
+  //
+  PreviewDone: function () {
+    this.mjRunning = false;
+    this.SwapBuffers();
+  }
+
+};
+
+//
+//  Guardamos en cache la fn retrollamada
+//
+Preview.callback = MathJax.Callback(["CreatePreview",Preview]);
+Preview.callback.autoReset = true;  // puede correr mas de una vez
+
+</script>
+</head>
+<body>
+
+Escriba el texto:<br/>
+
+<textarea id="MathInput" cols="60" rows="10" onkeyup="Preview.Update()" style="margin-top:5px">
+</textarea>
+<br/><br/>
+Visualización:
+<div id="MathPreview" style="border:1px solid; padding: 3px; width:50%; margin-top:5px"></div>
+<div id="MathBuffer" style="border:1px solid; padding: 3px; width:50%; margin-top:5px;
+visibility:hidden; position:absolute; top:0; left: 0"></div>
+
+<script>
+Preview.Init();
+</script>
+
+</body>
+</html>
