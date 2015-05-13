@@ -18,9 +18,16 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <script src="bower_components/MathJax/MathJax.js?config=TeX-AMS_HTML-full"></script>
+
 
   <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      showProcessingMessages: false,
+      tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+    });
+  </script>
+  <script type="text/javascript" src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   <link rel="import" href="paper-calculator.html">
   <link rel="import" href="bower_components/font-roboto/roboto.html">
