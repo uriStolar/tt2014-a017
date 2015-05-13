@@ -55,13 +55,15 @@ division
 primary
   = exponentes
   / "d/dx(" additive:additive ")" { return "\\frac{d}{dx}(" + additive + ")"; }
-  / "d\u00B2/dx\u00B2(" additive:additive ")" { return "\\frac{d}{dx}(" + additive + ")"; }
+  / "d\u00B2/dx\u00B2(" additive:additive ")" { return "\\frac{d^2}{dx^2}(" + additive + ")"; }
   / "(" additive:additive ")" { return additive; }
+  / "\u222B(" additive:additive ")" { return "\\int(" + additive + ")dx"; }
 
 exponentes
   = left:combinado right:"\u00B2" {return left + "^" + 2;}
   / left:combinado right:"\u00B3" {return left + "^" + 3;}
-  / left:combinado right:"\u207F" {return left + "^" + n;}
+  / left:combinado right:"\u207F" grado:integer {return left + "^" + grado;}
+  / left:exponencial right:"\u207F" grado:combinado {return left + "^" + grado;}
   / combinado
 
 combinado
@@ -69,13 +71,19 @@ combinado
   / variables
 
 variables "variables"
-  = vars:[ewxyz]i+ { return cadenaMultiplicativa(vars); }
+  = vars:[wxyz]i+ { return cadenaMultiplicativa(vars); }
   / integer
+
+exponencial "exponencial"
+  = exp:[e] { return "e"; }
 
 integer "integer"
   = digits:[0-9]+ { return cadenaMultiplicativa(digits); }
 
-  //d/dx((3+4))+d²/dx²((3x))
+  //d/dx((3+4))+d²/dx((3x))
   //d/dx((x²))
   //d/dx((x²+3x))
   //d²/dx²((4+x))
+  //xⁿ
+  //∫(x²)
+  //∫eⁿ

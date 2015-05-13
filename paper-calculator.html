@@ -119,7 +119,7 @@
       ],
 
       modeKeys: [
-        ['Solucion']
+        ['Solución']
       ],
 
       errorMsgs: ['error...', 'umm...', ':-('],
@@ -184,7 +184,7 @@
         if (this.modeKeys[0].indexOf(k) < 0) {
           this.processKey(k);
         }
-        if(k=='Solucion'){
+        if(k=='Solución'){
           this.processKey(k);
         }
       },
@@ -201,7 +201,7 @@
         var c = e.keyCode, k;
         // enter key
         if (c === 13) {
-          k = 'Solucion';
+          k = 'Solución';
         } else {
           k = String.fromCharCode(c);
         }
@@ -214,7 +214,7 @@
         if (this.result && k !== '=') {
           this.clear();
         }
-        if (k === 'Solucion') {
+        if (k === 'Solución') {
           this.async(this.eval);
           //this.expression = "Solcionado...";
         } else if (k === 'DEL') {
