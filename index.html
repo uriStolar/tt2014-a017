@@ -21,13 +21,20 @@
 
 
   <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      showProcessingMessages: false,
-      tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
-    });
+  <link rel="import" href="script-imports.html">
+
+<!--
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+      }
+    };
   </script>
   <script type="text/javascript" src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  -->
+
 
   <link rel="import" href="paper-calculator.html">
   <link rel="import" href="bower_components/font-roboto/roboto.html">
@@ -58,15 +65,11 @@
 
 </head>
 <body unresolved>
+<div id="expression">
 
+</div>
   <!-- <div class="math">
-    \[\begin{aligned}
-    \dot{x} &amp; = \sigma(y-x) \\
-    \dot{y} &amp; = \rho x &#8211; y &#8211; xz \\
-    \dot{z} &amp; = -\beta z + xy\\
-    &amp; \sigma \sigma \sigma
-    \end{aligned} \]
-
+    $$\frac{d}{dx}(3+4)+\frac{d^2}{dx^2}(3x)$$
 
   </div> -->
 

@@ -79,50 +79,65 @@
     overflow: hidden;
   }
 
+  #Leibniz{
+    max-width: 100%;
+    max-height: 100%;
+    width: 480px;
+    height: 260px;
+    background: none transparent;
+    size: 0.1em;
+    position: relative;
+  }
+
 </style>
+
 <!-- <div class="clearfix" id="latexPanel" horizontal end-justified center layout>
 {{mathexpression}}
 </div> -->
 
-<div class="mathjax {{ {matherror: matherror, 'show-mathresult': mathresult && !matherror } | tokenList }}">
+ <!-- <div class="mathjax {{ {matherror: matherror, 'show-mathresult': mathresult && !matherror } | tokenList }}"> -->
+ <div class="mathjax {{ tokenList }}">
 
-  <div class="mathexpression-outer" horizontal end-justified center layout>
-    <div id="expression">{{expression}}</div>
-    <!-- <div id="matherror">{{matherror}}</div> -->
+  <div class="mathexpression-outer" >
+
+    <div id="expression" style="clear: both;">{{expression}}</div>
+    <iframe src="/leibniz.html" name="Leibniz" id="Leibniz" scrolling="no" allowtransparency="true" frameborder="0">{{expression}}
+      <p>Tu navegador no soporta iframes :-( </p>
+    </iframe>
+    <!-- <div id="matherror">{{matherror}}</div>
 
     <div id="MathPreview"></div>
     <div id="MathBuffer" style="border:1px solid; padding: 3px; width:50%; margin-top:5px;
     visibility:hidden; position:absolute; top:0; left: 0"></div>
 
-<!--
+
     <script>
     Preview.Init();
     </script>
  -->
 
   </div>
-<!--
-  <div class="mathresult" horizontal center layout>
 
-    <div class="mathresult-equal">=</div>
-    <div class="mathresult-value" flex horizontal end-justified layout>{{mathresult}}</div>
-
-  </div> -->
 
 </div>
 
-
+<!--
+<iframe src="/demomathjax.html" name="Leibniz" width="400" height="500" scrolling="no" frameborder="1">
+  <p>Tu navegador no soporta iframes :-( </p>
+</iframe>
+ -->
 </template>
 
 <!-- MathJax stuff -->
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  showProcessingMessages: false,
-  tex2jax: { inlineMath: [['$$','$$'],['\\(','\\)']] }
-});
-</script>
-<script type="text/javascript" src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+<!-- // <script type="text/x-mathjax-config">
+// MathJax.Hub.Config({
+//   showProcessingMessages: false,
+//   tex2jax: { inlineMath: [['$$','$$'],['\\(','\\)']] }
+// });
+// </script>
+// <script type="text/javascript" src="bower_components/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+//  -->
 <script>
 
   Polymer('paper-calculator-mathjax', {
